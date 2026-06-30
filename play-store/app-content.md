@@ -12,6 +12,12 @@ Last updated: June 30, 2026
 
 Recommended answer for current version: No, the app does not contain ads.
 
+## Advertising ID
+
+Recommended answer for current version: No, this app does not use advertising ID.
+
+Rationale: the current Android manifest does not request `com.google.android.gms.permission.AD_ID`, and the app does not include ads, analytics, attribution, telemetry, crash reporting, or third-party SDKs that use advertising ID.
+
 ## App access / sign-in details
 
 Recommended answer for current version: All functionality is available without sign-in or credentials.
