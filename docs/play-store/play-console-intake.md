@@ -4,8 +4,9 @@ Last updated: June 30, 2026
 
 ## User-provided decisions
 
-- Google Play Developer account: not created yet.
+- Google Play Developer account: created and verified.
 - Intended account email: `abhotoia@gmail.com`.
+- Play developer name: YukiMobile.
 - App price: free for initial launch.
 - Target audience: 13+.
 - Initial launch countries: United States and Canada.
