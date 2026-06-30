@@ -47,6 +47,6 @@ C:\Users\Amrit\Documents\Claude\euchreapp\android\app\build\outputs\bundle\relea
 ## External blockers
 
 - Play Console login/account access.
-- Public HTTPS privacy policy URL.
+- Public HTTPS privacy policy URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`.
 - Final free/paid decision.
 - Developer account and track testing requirements, especially if using a newer personal developer account.

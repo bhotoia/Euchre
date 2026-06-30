@@ -10,7 +10,7 @@ Last updated: June 30, 2026
 - Category: Card
 - Default language: English
 - Support email: `abhotoia@gmail.com`
-- Privacy policy URL: pending public hosting of `docs/privacy-policy.html`
+- Privacy policy URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`
 
 ## Short description
 

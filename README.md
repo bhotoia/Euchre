@@ -325,10 +325,10 @@ Current release-readiness status:
 - The app now has an in-app About/Privacy/Support screen describing the current local-only data posture.
 - Permanent Android application id selected: `com.offlineeuchre.cardgame`.
 - Support email selected: `abhotoia@gmail.com`.
-- Draft privacy policy exists at `docs/privacy-policy.md`, with a static page at `docs/privacy-policy.html`. No domain purchase is needed; enable GitHub Pages from the `docs/` folder or publish those files on another free static host to get the Play Console URL.
+- Privacy policy exists at `docs/privacy-policy.md`, with a static page at `docs/privacy-policy.html`. Public URL for Play Console: `https://bhotoia.github.io/Euchre/privacy-policy.html`.
 - A real PKCS12 upload keystore and env script exist outside the repo at `C:\Users\Amrit\Documents\Euchre Play Store Secrets`; they still need secure backup before first upload.
 - Play Store draft materials exist under `docs/play-store/`: listing copy, release notes, App content notes, Data Safety worksheet, content-rating notes, security notes, asset manifest, feature graphic, and phone screenshots.
-- A public privacy policy URL still needs an external hosting/publishing step before listing.
+- Public privacy policy URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`.
 - The app currently has no backend, login, cloud sync, telemetry, ads, or Play Games integration. This keeps the initial Data Safety posture simpler, but Play Console declarations and a privacy policy are still required before listing.
 - If Google sign-in, Play Games Services, cloud saves, achievements, leaderboards, analytics, ads, or crash reporting are added, update the privacy policy, Play Data Safety answers, and README storage/account sections in the same change.
 - Security health checks are scripted with `npm run security:check`; keep that gate green before each Play upload or track promotion.
