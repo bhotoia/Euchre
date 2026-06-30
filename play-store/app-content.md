@@ -4,9 +4,9 @@ Last updated: June 30, 2026
 
 ## Privacy policy
 
-- Status: draft file exists locally.
+- Status: hosted through GitHub Pages.
 - File: `docs/privacy-policy.html`
-- Console value needed: public HTTPS URL after hosting.
+- Play Console URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`
 
 ## Ads
 
