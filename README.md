@@ -66,7 +66,7 @@ Verified for this handoff on June 30, 2026:
 - S24+ active user package check: only `com.offlineeuchre.cardgame` remains; `com.offlineeuchre.cardgame.debug` was removed to avoid duplicate app icons.
 - Release signing with private PKCS12 upload keystore outside the repo: pass; `jarsigner -verify` reports `jar verified`
 - Static no-domain privacy page: `docs/privacy-policy.html` added and covered by tests.
-- Play listing assets generated: 1024×500 feature graphic and five 432×864 phone screenshots under `docs/play-store/assets/`.
+- Play listing assets generated: 1024×500 feature graphic, five 432×864 phone screenshots, five 1080×1920 7-inch tablet screenshots, and five 1200×1920 10-inch tablet screenshots under `docs/play-store/assets/`.
 - Bug fixes covered by tests: discarded card preview centers inside the shaded discard target; Slow/Fast game speed is normalized, persisted, and refreshed from storage.
 - Bug fixes covered by tests: order-up drawer shows a compact premium cue for who receives the turned-up card and which team they are on; dealer receives the turned-up card before pickup animation completes when another player orders it up alone.
 
@@ -327,7 +327,7 @@ Current release-readiness status:
 - Support email selected: `abhotoia@gmail.com`.
 - Privacy policy exists at `docs/privacy-policy.md`, with a static page at `docs/privacy-policy.html`. Public URL for Play Console: `https://bhotoia.github.io/Euchre/privacy-policy.html`.
 - A real PKCS12 upload keystore and env script exist outside the repo at `C:\Users\Amrit\Documents\Euchre Play Store Secrets`; they still need secure backup before first upload.
-- Play Store draft materials exist under `docs/play-store/`: listing copy, release notes, App content notes, Data Safety worksheet, content-rating notes, security notes, asset manifest, feature graphic, and phone screenshots.
+- Play Store draft materials exist under `docs/play-store/`: listing copy, release notes, App content notes, Data Safety worksheet, content-rating notes, security notes, asset manifest, feature graphic, phone screenshots, and tablet screenshots.
 - Public privacy policy URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`.
 - The app currently has no backend, login, cloud sync, telemetry, ads, or Play Games integration. This keeps the initial Data Safety posture simpler, but Play Console declarations and a privacy policy are still required before listing.
 - If Google sign-in, Play Games Services, cloud saves, achievements, leaderboards, analytics, ads, or crash reporting are added, update the privacy policy, Play Data Safety answers, and README storage/account sections in the same change.
