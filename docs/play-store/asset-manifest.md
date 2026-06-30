@@ -8,8 +8,8 @@ Last updated: June 30, 2026
 - Feature graphic: `docs/play-store/assets/feature-graphic-1024x500.jpg`
 - Source-quality feature graphic: `docs/play-store/assets/feature-graphic-1024x500.png`
 - Phone screenshots: `docs/play-store/assets/screenshots/phone-*.png` after screenshot generation
-- 7-inch tablet screenshots: `docs/play-store/assets/screenshots/tablet-7-inch/*.png` at 1080 x 1920
-- 10-inch tablet screenshots: `docs/play-store/assets/screenshots/tablet-10-inch/*.png` at 1200 x 1920
+- 7-inch tablet screenshots: `docs/play-store/assets/screenshots/tablet-7-inch/*.png` at 1920 x 1080 landscape
+- 10-inch tablet screenshots: `docs/play-store/assets/screenshots/tablet-10-inch/*.png` at 2560 x 1600 landscape
 
 ## Current asset rules
 

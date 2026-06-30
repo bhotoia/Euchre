@@ -70,8 +70,8 @@ const SAVES_KEY = 'euchre.saves.v1';   // map keyed by mode → each mode resume
 const FEEDBACK_KEY = 'euchre.feedback.v2';
 const HAND_RESULT_SETTLE_MS = 180;
 const APP_INFO = {
-  versionName: '2.28',
-  versionCode: '39',
+  versionName: '2.29',
+  versionCode: '40',
   applicationId: 'com.offlineeuchre.cardgame',
   supportEmail: 'abhotoia@gmail.com',
 };
