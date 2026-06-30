@@ -27,7 +27,7 @@ No sign-in is required. The app is an offline Euchre game. All modes are availab
 Suggested positioning:
 
 - Not designed for children.
-- Suggested target age group: 13+ unless the Play Console account strategy requires a different audience.
+- Target age group: 13+.
 - No user-generated content.
 - No social sharing.
 - No location sharing.
