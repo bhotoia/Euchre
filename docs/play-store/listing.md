@@ -5,10 +5,13 @@ Last updated: June 30, 2026
 ## App identity
 
 - App name: Euchre
+- Fallback app name if Play review or trademark screening objects to the generic title: EuchreGo
 - Package name: `com.offlineeuchre.cardgame`
 - App or game: Game
 - Category: Card
 - Default language: English
+- Price: Free for initial launch
+- Initial countries/regions: United States and Canada
 - Support email: `abhotoia@gmail.com`
 - Privacy policy URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`
 

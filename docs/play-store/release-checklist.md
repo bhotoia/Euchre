@@ -39,7 +39,8 @@ C:\Users\Amrit\Documents\Claude\euchreapp\android\app\build\outputs\bundle\relea
 
 ## Play Console fields
 
-- Create app: app name `Euchre`, game, card category, free or paid decision, support email `abhotoia@gmail.com`.
+- Create app: app name `Euchre`, game, card category, free, support email `abhotoia@gmail.com`.
+- Initial availability: United States and Canada.
 - App content: privacy policy URL, ads declaration, app access/sign-in, target audience, content rating, Data safety, permissions.
 - Store listing: app icon, feature graphic, screenshots, short description, full description, contact email.
 - Release: internal testing first, then review pre-launch report, then closed/open/production track as appropriate.
@@ -47,6 +48,5 @@ C:\Users\Amrit\Documents\Claude\euchreapp\android\app\build\outputs\bundle\relea
 ## External blockers
 
 - Play Console login/account access.
-- Public HTTPS privacy policy URL: `https://bhotoia.github.io/Euchre/privacy-policy.html`.
-- Final free/paid decision.
+- Google Play Developer account creation and identity/payment verification.
 - Developer account and track testing requirements, especially if using a newer personal developer account.
