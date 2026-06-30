@@ -5,7 +5,8 @@ Last updated: June 30, 2026
 ## Required assets
 
 - App icon: `icons/icon-512.png`
-- Feature graphic: `docs/play-store/assets/feature-graphic-1024x500.png`
+- Feature graphic: `docs/play-store/assets/feature-graphic-1024x500.jpg`
+- Source-quality feature graphic: `docs/play-store/assets/feature-graphic-1024x500.png`
 - Phone screenshots: `docs/play-store/assets/screenshots/phone-*.png` after screenshot generation
 
 ## Current asset rules
@@ -16,7 +17,7 @@ Last updated: June 30, 2026
 
 ## Alt text drafts
 
-- Feature graphic: Euchre game logo with cards and offline play modes.
+- Feature graphic: Premium Euchre wordmark, polished card fan, and offline play modes.
 - Home screenshot: Euchre home screen showing Solo, Train, Daily Deal, and Tournaments.
 - Gameplay screenshot: Euchre hand in progress with trump, score, and playable cards.
 - Coach screenshot: Train mode coach panel explaining the recommended move.
