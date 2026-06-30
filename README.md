@@ -63,8 +63,8 @@ Verified for this handoff on June 30, 2026:
 - `npm run android:apk`: pass; output `android/app/build/outputs/apk/debug/app-debug.apk`
 - `npm run android:aab`: pass; output `android/app/build/outputs/bundle/release/app-release.aab`
 - Browser smoke test via generated screenshots: Settings → About opens, shows `Version 2.29 (40)`, and has no horizontal overflow at the phone screenshot size.
-- S24+ Wi-Fi ADB update to `2.29 (40)` was attempted but blocked because `192.168.68.58:40015` refused the connection and no wireless-debugging mDNS service was discovered. Re-enable Wireless debugging and install `android/build/euchre.apk` over the existing final package.
-- Previous S24+ active user package check: only `com.offlineeuchre.cardgame` remained; `com.offlineeuchre.cardgame.debug` was removed to avoid duplicate app icons.
+- S24+ Wi-Fi ADB install: `com.offlineeuchre.cardgame` version `2.29` / code `40` installed and launched successfully from `android/build/euchre.apk` via `192.168.68.58:37577`.
+- S24+ active user package check: only `com.offlineeuchre.cardgame` remains; no debug duplicate package is installed.
 - Release signing with private PKCS12 upload keystore outside the repo: pass; `jarsigner -verify` reports `jar verified`
 - Static no-domain privacy page: `docs/privacy-policy.html` added and covered by tests.
 - Play listing assets generated: 1024×500 feature graphic, five 432×864 phone screenshots, five 1920×1080 landscape 7-inch tablet screenshots, and five 2560×1600 landscape 10-inch tablet screenshots under `docs/play-store/assets/`.
