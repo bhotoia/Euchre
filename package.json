@@ -1,0 +1,22 @@
+{
+  "name": "euchreapp",
+  "version": "1.0.0",
+  "description": "Premium Euchre — solo play, AI coaching, Daily Deals, and tournaments. Installable PWA.",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check js/cards.js && node --check js/engine.js && node --check js/ai.js && node --check js/daily.js && node --check js/coach.js && node --check js/coach.worker.js && node --check js/coach-client.js && node --check js/stats.js && node --check js/events.js && node --check js/ui.js && node --check js/main.js && node --check server.js && node --check sw.js",
+    "security:check": "npm audit --audit-level=moderate && node scripts/security-health-check.mjs",
+    "test": "node --no-warnings --test test/engine.test.mjs test/coach.test.mjs test/meta.test.mjs",
+    "test:sim": "node test/simulation.mjs",
+    "test:coach-sim": "node test/coach-sim.mjs",
+    "android:bundle": "node android/bundle.js",
+    "android:apk": "node android/gradle-run.js assembleDebug",
+    "android:aab": "node android/gradle-run.js bundleRelease",
+    "android:build": "npm run android:apk",
+    "android:build:legacy": "\"C:\\Program Files\\Git\\bin\\bash.exe\" android/build.sh"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

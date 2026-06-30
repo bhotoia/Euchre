@@ -1,0 +1,17 @@
+node_modules/
+.claude/
+.codex-server.*.log
+android/build/
+android/.gradle/
+android/app/build/
+android/assets/
+android/*.keystore
+*.keystore
+*.jks
+*.p12
+.env.release*
+release-signing-env.ps1
+play-store-secrets/
+*.apk
+*.aab
+*.idsig

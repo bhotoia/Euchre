@@ -1,0 +1,64 @@
+plugins {
+    id "com.android.application"
+}
+
+def hasReleaseSigning = providers.environmentVariable("EUCHRE_RELEASE_KEYSTORE").isPresent()
+
+android {
+    namespace "com.offlineeuchre.cardgame"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.offlineeuchre.cardgame"
+        minSdk 24
+        targetSdk 35
+        versionCode 39
+        versionName "2.28"
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile "../AndroidManifest.xml"
+            java.srcDirs = ["../java"]
+            res.srcDirs = ["../res"]
+            assets.srcDirs = ["../assets"]
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(providers.environmentVariable("EUCHRE_RELEASE_KEYSTORE").get())
+                storePassword providers.environmentVariable("EUCHRE_RELEASE_STORE_PASSWORD").orNull
+                keyAlias providers.environmentVariable("EUCHRE_RELEASE_KEY_ALIAS").orNull
+                keyPassword providers.environmentVariable("EUCHRE_RELEASE_KEY_PASSWORD").orNull
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+        release {
+            minifyEnabled false
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+tasks.register("bundleWebAssets", Exec) {
+    workingDir rootProject.projectDir
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        commandLine "cmd", "/c", "node", "bundle.js"
+    } else {
+        commandLine "node", "bundle.js"
+    }
+}
+
+tasks.matching { it.name == "preBuild" }.configureEach {
+    dependsOn tasks.named("bundleWebAssets")
+}

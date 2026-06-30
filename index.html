@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Euchre" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#05140d" />
+  <title>Euchre</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-se-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-x-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-11-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-12-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-15-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-16-pro-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-plus-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-plus-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="apple-touch-startup-image" href="icons/ios-launch/iphone-16-pro-max-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ─── Home / Menu ─── -->
+    <section id="menu" class="screen active">
+      <button class="icon-btn menu-settings" id="settingsBtn" type="button" aria-label="Settings">⚙</button>
+      <div class="menu-inner">
+        <div class="brand">
+          <div class="brand-mark">
+            <span class="pip pip-s">♠</span>
+            <span class="pip pip-h">♥</span>
+            <span class="pip pip-d">♦</span>
+            <span class="pip pip-c">♣</span>
+          </div>
+          <h1>Euchre</h1>
+          <p class="tagline">First to 10. Bowers high. No mercy.</p>
+          <div class="playing-as">Playing as <b id="profileName">You</b></div>
+        </div>
+        <div class="menu-actions">
+          <button class="btn btn-primary" data-mode="ai">
+            <span class="btn-title">Solo</span>
+            <span class="btn-sub">You + AI partner vs 2 AI</span>
+          </button>
+          <button class="btn btn-glass" data-mode="train">
+            <span class="btn-title">Train <span class="btn-badge">Coach</span></span>
+            <span class="btn-sub">Every move graded — learn to master it</span>
+          </button>
+          <button class="btn btn-glass daily-menu-btn" id="dailyBtn">
+            <span class="btn-title">Daily Deal <span class="daily-dot">●</span></span>
+            <span class="btn-sub">Same table for everyone — first attempt counts</span>
+          </button>
+          <button class="btn btn-glass" id="tournamentsBtn">
+            <span class="btn-title">Tournaments 🏆</span>
+            <span class="btn-sub">Climb the cups — unlock card packs</span>
+          </button>
+          <button class="clubhouse-entry" id="clubhouseBtn" type="button">
+            <span class="clubhouse-icon">♣</span>
+            <span><b>Clubhouse</b><small>Team, stats, trophies &amp; card packs</small></span>
+            <span class="clubhouse-arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clubhouse / progression hub -->
+    <section id="clubhouse" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="clubhouseBack" aria-label="Back to menu">‹</button>
+        <div class="stats-rank">Clubhouse</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="hub-body">
+        <p class="hub-intro">Your team, career, and collection.</p>
+        <div class="hub-grid">
+          <button class="hub-tile" id="teamBtn" type="button">
+            <span class="hub-icon">🤝</span><b>Your Team</b><small>Choose your ally and team name</small>
+          </button>
+          <button class="hub-tile" id="statsBtn" type="button">
+            <span class="hub-icon">📊</span><b>Your Stats</b><small>Career record, rank, and badges</small>
+          </button>
+          <button class="hub-tile" id="trophiesBtn" type="button">
+            <span class="hub-icon">🏆</span><b>Trophy Room</b><small>Titles, cups, and rival records</small>
+          </button>
+          <button class="hub-tile" id="packsBtn" type="button">
+            <span class="hub-icon">🂠</span><b>Card Packs</b><small>Browse and equip your collection</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section id="settings" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="settingsBack" aria-label="Back to menu">‹</button>
+        <div class="stats-rank">Settings</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="settings-body">
+        <h3 class="settings-h">Profile</h3>
+        <button class="settings-link" id="editProfileBtn" type="button">
+          <span><b>Edit identity</b><small>Player and team names</small></span><span>›</span>
+        </button>
+
+        <h3 class="settings-h" id="languageHeader">Language</h3>
+        <div class="settings-card" aria-label="Language settings">
+          <div class="setting-row">
+            <span><b id="languageTitle">Language</b><small id="languageDesc">Current: English</small></span>
+            <button class="preference-toggle" id="languagePickerBtn" type="button">
+              <span class="preference-state" id="languageAction">Change language</span>
+            </button>
+          </div>
+        </div>
+
+        <h3 class="settings-h">Game feedback</h3>
+        <div class="settings-card" aria-label="Game feedback settings">
+          <div class="setting-row">
+            <span><b>Haptics</b><small>Vibrate for cards, tricks, and scores</small></span>
+            <button class="preference-toggle active" id="hapticsToggle" type="button" aria-pressed="true">
+              <span class="preference-state">On</span>
+            </button>
+          </div>
+          <div class="setting-row">
+            <span><b>Sound</b><small>Play subtle table sounds</small></span>
+            <button class="preference-toggle" id="soundToggle" type="button" aria-pressed="false">
+              <span class="preference-state">Off</span>
+            </button>
+          </div>
+          <div class="setting-row">
+            <span><b id="speedTitle">Game speed</b><small id="speedDesc">Slower pacing is easier for learning</small></span>
+            <button class="preference-toggle" id="speedToggle" type="button" aria-pressed="false">
+              <span class="preference-state" id="speedState">Slow</span>
+            </button>
+          </div>
+        </div>
+
+        <h3 class="settings-h">Appearance</h3>
+        <button class="settings-link settings-pack-link" id="appearancePacksBtn" type="button">
+          <span><b>Card pack</b><small id="settingsPackSummary">Classic Green equipped</small></span>
+          <span class="settings-pack-preview theme-classic" id="settingsPackPreview" aria-hidden="true"><span class="pp-back"></span></span>
+        </button>
+
+        <h3 class="settings-h">Help</h3>
+        <button class="settings-link" id="rulesBtn" type="button">
+          <span><b>How to play</b><small>Rules, bowers, bidding, and scoring</small></span><span>›</span>
+        </button>
+        <button class="settings-link" id="aboutBtn" type="button">
+          <span><b>About, privacy &amp; support</b><small>Version, local data, and support details</small></span><span>›</span>
+        </button>
+
+        <h3 class="settings-h">Data</h3>
+        <div class="settings-card settings-data">
+          <button id="statsReset" type="button">Reset stats</button>
+          <button class="danger-link" id="resetAllBtn" type="button">Reset everything</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- About / privacy / support -->
+    <section id="about" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="aboutBack" aria-label="Back to Settings">‹</button>
+        <div class="stats-rank" id="aboutTitle">About</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="stats-body about-body">
+        <div class="about-app-card">
+          <div class="brand-mark about-mark" aria-hidden="true">
+            <span class="pip pip-s">♠</span>
+            <span class="pip pip-h">♥</span>
+            <span class="pip pip-d">♦</span>
+            <span class="pip pip-c">♣</span>
+          </div>
+          <h2>Euchre</h2>
+          <p id="aboutVersion">Version 2.26 (37)</p>
+        </div>
+
+        <h3 class="stats-h" id="aboutPrivacyHeader">Privacy</h3>
+        <div class="settings-card about-copy">
+          <p id="aboutPrivacyCopy">This build stores profile, saves, stats, settings, Daily Deal history, tournament progress, allies, rivals, titles, and card packs on this device. It does not use accounts, cloud sync, ads, analytics, crash reporting, telemetry, or online multiplayer.</p>
+          <p id="aboutResetCopy">Reset everything removes Euchre local data from this device.</p>
+        </div>
+
+        <h3 class="stats-h" id="aboutSupportHeader">Support</h3>
+        <div class="settings-card about-copy">
+          <p id="aboutSupportCopy">Email abhotoia@gmail.com for support. Include the app version when reporting a bug.</p>
+        </div>
+
+        <h3 class="stats-h" id="aboutBuildHeader">Build</h3>
+        <div class="settings-card about-build">
+          <div><span id="aboutAppIdLabel">Application ID</span><b id="aboutAppId">com.offlineeuchre.cardgame</b></div>
+          <div><span id="aboutDataLabel">Data storage</span><b id="aboutDataValue">Local device only</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Mode submenu (Solo / Train) ─── -->
+    <section id="modeMenu" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="modeMenuBack" aria-label="Back to menu">‹</button>
+        <div class="stats-rank" id="modeMenuTitle">Solo</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="modemenu-body">
+        <div class="resume-card" id="resumeCard" hidden>
+          <div class="resume-info">
+            <div class="resume-label">Resume game</div>
+            <div class="resume-sub" id="resumeSub"></div>
+          </div>
+          <div class="resume-actions">
+            <button class="btn btn-glass" id="resumeDiscard">Discard</button>
+            <button class="btn btn-primary" id="resumeBtn">Resume</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="newGameBtn">New game</button>
+        <div class="diff-row" id="modeDiffRow">
+          <span class="diff-label">Difficulty</span>
+          <div class="seg" id="modeDifficulty">
+            <button class="seg-opt" data-diff="easy">Easy</button>
+            <button class="seg-opt active" data-diff="normal">Normal</button>
+            <button class="seg-opt" data-diff="hard">Hard</button>
+          </div>
+        </div>
+        <button class="preference-toggle" id="modeAutoAdvance" type="button" aria-pressed="false" hidden>
+          <span>Auto-advance optimal</span><span class="preference-state">Off</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── Daily Deal ─── -->
+    <section id="daily" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="dailyBack" aria-label="Back to menu">‹</button>
+        <div class="stats-rank">Daily Deal</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="stats-body daily-body">
+        <div class="daily-hero">
+          <div class="daily-date" id="dailyDate"></div>
+          <div class="daily-status" id="dailyStatus"></div>
+          <div class="daily-score" id="dailyScore" hidden></div>
+        </div>
+        <div class="daily-lineup" id="dailyLineup"></div>
+        <div class="daily-meta" id="dailyMeta"></div>
+        <button class="btn btn-primary" id="dailyPlayBtn">Start official attempt</button>
+        <p class="daily-note" id="dailyNote">You get one official attempt. Replays are practice only.</p>
+        <div class="daily-records">
+          <div><span>Current streak</span><b id="dailyStreak">0 days</b></div>
+          <div><span>Personal best</span><b id="dailyBest">0</b></div>
+        </div>
+        <h3 class="stats-h">Recent deals</h3>
+        <div class="daily-history" id="dailyHistory"></div>
+      </div>
+    </section>
+
+    <!-- ─── Your Team (ally + team name) ─── -->
+    <section id="team" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="teamBack" aria-label="Back to Clubhouse">‹</button>
+        <div class="stats-rank">Your Team</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="stats-body">
+        <label class="field"><span>Team name</span>
+          <input id="teamNameInput" type="text" maxlength="14" autocomplete="off" placeholder="Us" />
+        </label>
+        <h3 class="stats-h">Your ally</h3>
+        <div class="ally-grid" id="allyGrid"></div>
+      </div>
+    </section>
+
+    <!-- ─── Stats / progression ─── -->
+    <section id="stats" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="statsBack" aria-label="Back to Clubhouse">‹</button>
+        <div class="stats-rank" id="statsRank">Novice</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="stats-body">
+        <div class="stats-grid" id="statsGrid"></div>
+        <h3 class="stats-h">Badges</h3>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </div>
+    </section>
+
+    <!-- ─── Tournaments ─── -->
+    <section id="tournaments" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="tourBack" aria-label="Back to menu">‹</button>
+        <div class="stats-rank">Tournaments</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="packs-body">
+        <div class="tour-grid" id="tourGrid"></div>
+      </div>
+    </section>
+
+    <!-- ─── Tournament detail ─── -->
+    <section id="tournamentDetail" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="tourDetailBack" aria-label="Back to tournaments">‹</button>
+        <div class="stats-rank" id="tourDetailName">Cup</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="packs-body">
+        <div class="tour-intro" id="tourIntro"></div>
+        <div class="tour-ladder" id="tourLadder"></div>
+        <button class="btn btn-primary tour-play" id="tourPlayBtn">Start cup</button>
+      </div>
+    </section>
+
+    <!-- ─── Trophy room ─── -->
+    <section id="trophies" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="trophiesBack" aria-label="Back to Clubhouse">‹</button>
+        <div class="stats-rank">Trophy Room</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="stats-body">
+        <h3 class="stats-h">Titles</h3>
+        <div class="titles-wrap" id="titlesWrap"></div>
+        <h3 class="stats-h">Cups</h3>
+        <div class="cups-wrap" id="cupsWrap"></div>
+        <h3 class="stats-h">Prestige Seasons</h3>
+        <div class="prestige-wrap" id="prestigeWrap"></div>
+        <h3 class="stats-h">Rivals</h3>
+        <div class="rivals-wrap" id="rivalsWrap"></div>
+      </div>
+    </section>
+
+    <!-- ─── Card packs ─── -->
+    <section id="packs" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="packsBack" aria-label="Back to Clubhouse">‹</button>
+        <div class="stats-rank">Card Packs</div>
+        <span style="width:44px"></span>
+      </header>
+      <div class="packs-body">
+        <div class="packs-grid" id="packsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ─── Game Table ─── -->
+    <section id="table" class="screen">
+      <header class="hud">
+        <button class="icon-btn" id="exitBtn" aria-label="Back to menu">‹</button>
+        <div class="scoreboard">
+          <div class="score-pill team-us"><span class="score-label">Us</span><span class="score-val" id="scoreUs">0</span></div>
+          <div class="trump-badge" id="trumpBadge"><span id="trumpSym">–</span></div>
+          <div class="score-pill team-them"><span class="score-label">Them</span><span class="score-val" id="scoreThem">0</span></div>
+        </div>
+        <div class="hud-right">
+          <button class="icon-btn" id="lastTrickBtn" aria-label="Review last trick" hidden>↩</button>
+          <button class="icon-btn" id="hintBtn" aria-label="Hint" hidden>💡</button>
+          <button class="icon-btn" id="helpBtn" aria-label="Help">?</button>
+        </div>
+      </header>
+
+      <div class="felt" id="felt">
+        <!-- seats -->
+        <div class="seat seat-top" id="seat-2"><div class="avatar"></div><div class="seat-name">Partner</div><div class="seat-tricks"></div><div class="hand hand-opp"></div></div>
+        <div class="seat seat-left" id="seat-1"><div class="avatar"></div><div class="seat-name">West</div><div class="seat-tricks"></div><div class="hand hand-opp"></div></div>
+        <div class="seat seat-right" id="seat-3"><div class="avatar"></div><div class="seat-name">East</div><div class="seat-tricks"></div><div class="hand hand-opp"></div></div>
+
+        <!-- center play area -->
+        <div class="center" id="center">
+          <div class="up-card-slot" id="upCardSlot"></div>
+          <div class="discard-target" id="discardTarget" aria-hidden="true">
+            <span>Discard</span>
+          </div>
+          <div class="play-slots">
+            <div class="play-slot slot-0" data-seat="0"></div>
+            <div class="play-slot slot-1" data-seat="1"></div>
+            <div class="play-slot slot-2" data-seat="2"></div>
+            <div class="play-slot slot-3" data-seat="3"></div>
+          </div>
+          <div class="dealer-chip" id="dealerChip">D</div>
+        </div>
+
+        <!-- your seat -->
+        <div class="seat seat-bottom" id="seat-0">
+          <div class="seat-tag" id="seat0Tag"><span class="seat-name-you">You</span><span class="seat-tricks-you"></span></div>
+          <div class="hand hand-you" id="handYou"></div>
+        </div>
+      </div>
+
+      <div class="table-messages">
+        <div class="contract" id="contractBar" hidden></div>
+        <div class="status-line" id="statusLine" role="status" aria-live="polite" aria-atomic="true"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── Bidding bottom sheet ─── -->
+  <div class="sheet-scrim" id="sheetScrim" aria-hidden="true"></div>
+  <div class="sheet" id="bidSheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-describedby="sheetSub" aria-hidden="true" inert>
+    <div class="sheet-grip"></div>
+    <div class="sheet-title" id="sheetTitle">Order it up?</div>
+    <div class="sheet-sub" id="sheetSub"></div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+
+  <!-- ─── Coach review sheet (training mode) ─── -->
+  <div class="sheet-scrim" id="coachScrim" aria-hidden="true"></div>
+  <div class="sheet coach-sheet" id="coachSheet" role="dialog" aria-modal="true" aria-labelledby="coachGrade" aria-hidden="true" inert>
+    <div class="sheet-grip"></div>
+    <div class="coach-head">
+      <span class="coach-grade-chip" id="coachGrade">Optimal</span>
+      <span class="coach-tag">Coach</span>
+    </div>
+    <div class="coach-quick" id="coachQuick"></div>
+    <details class="coach-details" id="coachDetails">
+      <summary>Read the reasoning</summary>
+      <div class="coach-explain" id="coachExplain"></div>
+      <div class="coach-cards" id="coachCards"></div>
+      <div class="coach-lesson" id="coachLesson"></div>
+    </details>
+    <div class="coach-foot">
+      <button class="coach-auto" id="coachAuto" type="button" aria-pressed="false">
+        <span class="switch" aria-hidden="true"></span>
+        <span>Auto-advance when optimal <b id="coachAutoState">Off</b></span>
+      </button>
+      <button class="btn btn-primary" id="coachNext">Got it</button>
+    </div>
+  </div>
+
+  <!-- ─── Hand-end / Game-end modal ─── -->
+  <div class="modal-scrim" id="modalScrim" aria-hidden="true">
+    <div class="modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalScore">
+      <div class="modal-kicker" id="modalKicker"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-score" id="modalScore"></div>
+      <div class="result-summary" id="modalSummary"></div>
+      <div class="recap" id="modalRecap" style="display:none"></div>
+      <button class="btn btn-primary" id="modalBtn">Continue</button>
+    </div>
+  </div>
+
+  <!-- ─── Rival face-off / post-match ─── -->
+  <div class="faceoff" id="faceoff" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="faceoffName">
+    <div class="faceoff-inner">
+      <div class="faceoff-kicker" id="faceoffKicker">Now entering</div>
+      <div class="faceoff-duo">
+        <div class="ff-fighter">
+          <div class="faceoff-portrait" id="faceoffPortrait"></div>
+          <div class="ff-cap-tag">Captain</div>
+        </div>
+        <div class="ff-amp">&amp;</div>
+        <div class="ff-fighter ff-side">
+          <div class="faceoff-portrait small" id="faceoffPortrait2"></div>
+          <div class="ff-side-name" id="faceoffSidename"></div>
+        </div>
+      </div>
+      <div class="faceoff-name" id="faceoffName">Rival</div>
+      <div class="faceoff-title" id="faceoffTitle"></div>
+      <div class="faceoff-h2h" id="faceoffSub"></div>
+      <div class="faceoff-meta" id="faceoffMeta"></div>
+      <div class="faceoff-line" id="faceoffLine"></div>
+      <div class="faceoff-actions">
+        <button class="btn btn-glass" id="faceoffSecondary">Back</button>
+        <button class="btn btn-primary" id="faceoffPrimary">Deal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Last-trick review ─── -->
+  <div class="modal-scrim" id="lastTrickScrim" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="lastTrickTitle">
+      <div class="modal-kicker">Previous trick</div>
+      <div class="modal-title" id="lastTrickTitle" style="font-size:22px">Last trick</div>
+      <div class="last-trick-cards" id="lastTrickCards"></div>
+      <button class="btn btn-primary" id="lastTrickClose">Close</button>
+    </div>
+  </div>
+
+  <!-- ─── Tournament reward ─── -->
+  <div class="modal-scrim" id="rewardScrim" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rewardTitle">
+      <div class="modal-kicker" id="rewardKicker">Champion</div>
+      <div class="reward-pack theme-classic" id="rewardPackPreview"><span class="pp-back"></span></div>
+      <div class="modal-title" id="rewardTitle">Pack unlocked</div>
+      <div class="modal-score" id="rewardDesc"></div>
+      <div class="reward-unlocks" id="rewardUnlocks"></div>
+      <div class="reward-title-chip" id="rewardTitleChip" hidden></div>
+      <button class="btn btn-primary" id="rewardBtn">Sweet</button>
+    </div>
+  </div>
+
+  <!-- ─── Generic confirm ─── -->
+  <div class="modal-scrim" id="confirmScrim" aria-hidden="true">
+    <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmDesc">
+      <div class="modal-title" id="confirmTitle" style="font-size:22px">Are you sure?</div>
+      <div class="modal-score" id="confirmDesc"></div>
+      <button class="btn btn-primary" id="confirmCancel">Cancel</button>
+      <button class="btn btn-ghost btn-danger-text" id="confirmOk">Confirm</button>
+    </div>
+  </div>
+
+  <!-- ─── Language picker ─── -->
+  <div class="modal-scrim" id="languageScrim" aria-hidden="true">
+    <div class="modal language-modal" role="dialog" aria-modal="true" aria-labelledby="languageModalTitle" aria-describedby="languageModalDesc">
+      <div class="modal-kicker" id="languageModalKicker">Settings</div>
+      <div class="modal-title" id="languageModalTitle" style="font-size:24px">Choose language</div>
+      <div class="modal-score" id="languageModalDesc">Pick the language used across the game.</div>
+      <div class="language-options" role="listbox" aria-label="Language choices">
+        <button class="language-option" id="languageChoiceEn" type="button" data-language="en">
+          <span>English</span><small>English</small>
+        </button>
+        <button class="language-option" id="languageChoiceZh" type="button" data-language="zh">
+          <span>中文（普通话）</span><small>Mandarin Chinese</small>
+        </button>
+      </div>
+      <button class="btn btn-glass" id="languageCancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ─── Secret drawer ─── -->
+  <div class="modal-scrim" id="secretScrim" aria-hidden="true">
+    <div class="modal secret-modal" role="dialog" aria-modal="true" aria-labelledby="secretTitle" aria-describedby="secretDesc">
+      <div class="modal-kicker">Off the record</div>
+      <div class="modal-title" id="secretTitle" style="font-size:24px">Dealer's Drawer</div>
+      <div class="modal-score" id="secretDesc">A few things fell between the cards.</div>
+      <div class="secret-actions">
+        <button class="btn btn-glass" id="secretFelt" type="button">Polish the felt</button>
+        <button class="btn btn-glass" id="secretDealer" type="button">Ask the dealer</button>
+        <button class="btn btn-glass" id="secretCut" type="button">Cut the deck</button>
+      </div>
+      <button class="btn btn-primary" id="secretClose">Back to the table</button>
+    </div>
+  </div>
+
+  <!-- ─── Edit profile ─── -->
+  <div class="modal-scrim" id="profileScrim" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+      <div class="modal-kicker">Profile</div>
+      <div class="modal-title" id="profileTitle" style="font-size:24px">Your identity</div>
+      <label class="field"><span>Your name</span>
+        <input id="profilePlayer" type="text" maxlength="14" autocomplete="off" placeholder="You" />
+      </label>
+      <label class="field"><span>Team name</span>
+        <input id="profileTeam" type="text" maxlength="14" autocomplete="off" placeholder="Us" />
+      </label>
+      <div class="modal-actions">
+        <button class="btn btn-glass" id="profileCancel">Cancel</button>
+        <button class="btn btn-primary" id="profileSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── First-run welcome ─── -->
+  <div class="modal-scrim" id="welcomeScrim" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+      <div class="modal-kicker">Welcome</div>
+      <div class="modal-title" id="welcomeTitle">Learn Euchre fast</div>
+      <div class="modal-score">Train mode puts a coach behind every move — it grades each play and tells you the better line. The fastest way to master the game.</div>
+      <button class="btn btn-primary" id="welcomeTrain">Start training</button>
+      <button class="btn btn-ghost" id="welcomeSkip">Maybe later</button>
+    </div>
+  </div>
+
+  <!-- ─── Rules sheet ─── -->
+  <div class="modal-scrim" id="rulesScrim" aria-hidden="true">
+    <div class="modal modal-rules" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <div class="modal-title" id="rulesTitle">How to play</div>
+      <div class="rules-body" id="rulesBody">
+        <p><b>Deck</b> — 24 cards: 9, 10, J, Q, K, A in four suits.</p>
+        <p><b>Teams</b> — You + Partner (Us) vs West + East (Them).</p>
+        <p><b>Trump</b> — Each hand one suit is trump. The <b>right bower</b> (Jack of trump) is highest; the <b>left bower</b> (other Jack of the same color) is second and counts as trump.</p>
+        <p><b>Bidding</b> — A card is turned up. In turn, order it up (makes its suit trump) or pass. If all pass, name any other suit or pass again.</p>
+        <p><b>Going alone</b> — The maker may play without their partner for bonus points.</p>
+        <p><b>Play</b> — Follow the led suit if you can. Highest trump wins, else highest card of the led suit.</p>
+        <p><b>Scoring</b> — Makers: 3–4 tricks = 1, all 5 = 2 (4 alone). Euchred (makers fail) = 2 to defenders. First to 10 wins.</p>
+        <p><b>Trump order</b> (highest → lowest), with ♥ as trump:</p>
+        <div class="cheat-row">
+          <span class="cheat-card red">J♥<small>right</small></span>
+          <span class="cheat-card red">J♦<small>left</small></span>
+          <span class="cheat-card red">A♥</span>
+          <span class="cheat-card red">K♥</span>
+          <span class="cheat-card red">Q♥</span>
+          <span class="cheat-card red">10♥</span>
+          <span class="cheat-card red">9♥</span>
+        </div>
+        <p class="cheat-note">Both Jacks of the trump colour are the two strongest cards. Everything else ranks A–9 in its own suit.</p>
+      </div>
+      <button class="btn btn-primary" id="rulesClose">Got it</button>
+    </div>
+  </div>
+
+  <div class="modal-scrim" id="exitScrim" aria-hidden="true">
+    <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="exitTitle" aria-describedby="exitDescription">
+      <div class="modal-kicker">Current game</div>
+      <div class="modal-title" id="exitTitle">Leave the table?</div>
+      <div class="modal-score" id="exitDescription">Save to resume later from this mode’s menu, or leave without saving.</div>
+      <button class="btn btn-primary" id="leaveBtn">Save &amp; leave</button>
+      <button class="btn btn-glass" id="stayBtn">Keep playing</button>
+      <button class="btn btn-ghost btn-danger-text" id="discardLeaveBtn">Leave without saving</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
