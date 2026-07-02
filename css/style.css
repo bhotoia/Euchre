@@ -669,6 +669,26 @@ button.card {
   padding: 6px 9px;
   font-size: 12px;
 }
+.tutorial-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+.tutorial-actions .btn-primary[hidden] { display: none; }
+
+@media (max-width: 430px) {
+  .tutorial-guide {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .tutorial-actions {
+    justify-content: stretch;
+  }
+  .tutorial-actions .btn {
+    flex: 1;
+  }
+}
 
 /* last-trick review */
 .last-trick-cards { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 4px 0; }

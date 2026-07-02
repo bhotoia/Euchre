@@ -66,13 +66,16 @@ let trainHand = [];            // coach grades for the current hand
 let trainGame = [];            // coach grades for the whole game
 let hintBusy = false;
 let pendingDiscardId = null;
+let tutorialStepResolve = null;
+let tutorialStepWaiting = false;
+let tutorialSeen = new Set();
 
 const SAVES_KEY = 'euchre.saves.v1';   // map keyed by mode → each mode resumes independently
 const FEEDBACK_KEY = 'euchre.feedback.v2';
 const HAND_RESULT_SETTLE_MS = 180;
 const APP_INFO = {
-  versionName: '2.30',
-  versionCode: '41',
+  versionName: '2.31',
+  versionCode: '42',
   applicationId: 'com.offlineeuchre.cardgame',
   supportEmail: 'abhotoia@gmail.com',
 };
@@ -203,18 +206,29 @@ const I18N = {
     save: 'Save',
     welcome: 'Welcome',
     welcomeTitle: 'Welcome to Euchre',
-    welcomeText: 'Play a gentle one-hand tutorial with tips for bidding, following suit, and taking tricks. You can skip it any time.',
-    startTutorial: 'Play tutorial hand',
+    welcomeText: 'Start with a guided hand that explains the table, bidding, trump, trick play, and scoring one step at a time. You can skip it any time.',
+    startTutorial: 'Start guided hand',
     skipForNow: 'Skip for now',
     guidedHand: 'Guided hand',
-    tutorialIntro: 'We will play one hand slowly. Watch the turned-up card, choose whether to bid, then follow suit when you can.',
-    tutorialBidRound1: 'The card in the middle can become trump. If you order it up, the dealer gets that card and must discard one.',
-    tutorialBidRound2: 'Everyone passed. Now you can name any trump suit except the turned-down suit, or pass and redeal.',
-    tutorialDiscard: 'You are the dealer. Pick one card to discard so your hand goes back to five cards.',
-    tutorialPlay: 'Your turn. Follow the led suit if you have it. When you cannot follow suit, trump can win the trick.',
-    tutorialWatch: '{name} is deciding. Watch which suit is led and who has to follow it.',
+    tutorialNext: 'Next',
+    tutorialStartDeal: 'Deal cards',
+    tutorialTableIntro: 'You play bottom seat with your partner across from you. West and East are opponents. Each hand starts by choosing trump, then each player plays one card per trick.',
+    tutorialDeal: 'Cards are being dealt. You get five cards; the center card is turned up as the first possible trump suit.',
+    tutorialAfterDeal: '{dealerLine}. The turned card is {card}. Bidding starts left of the dealer and moves clockwise.',
+    tutorialBidRound1: 'Round 1: players may order up the turned card. If anyone does, {dealer} takes it and discards back to five cards.',
+    tutorialBidRound2: 'Round 2: the turned suit is unavailable. Players may name a different trump suit, or pass and redeal if everyone passes.',
+    tutorialAiBid: '{name} is deciding whether the turned card is strong enough to make trump.',
+    tutorialYourBidRound1: 'Your bid. As dealer, Pick up makes the turned card trump and adds it to your hand. Pass keeps bidding moving.',
+    tutorialYourBidRound2: 'Your bid. Name the suit where your hand is strongest, especially if you hold bowers or aces. Passing may cause a redeal.',
+    tutorialPickup: '{dealer} picks up {card}. {suit} is trump now, so those cards outrank every non-trump suit.',
+    tutorialTrumpCalled: '{name} called {suit} trump. The maker team must win at least three of the five tricks.',
+    tutorialDiscard: 'You have six cards after picking up. Discard the least useful card so your hand returns to five.',
+    tutorialPlayLead: '{name} leads the trick. The first card sets the led suit unless it is a bower counted as trump.',
+    tutorialPlay: 'Your turn. You must follow the led suit when you can. If you cannot follow, a trump card can win the trick.',
+    tutorialWatch: '{name} is playing. Watch the led suit, then notice whether each player follows suit or uses trump.',
+    tutorialTrickWon: '{name} won that trick. Trick winner leads the next trick, so control can shift quickly.',
     tutorialCompleteTitle: 'Tutorial hand complete',
-    tutorialCompleteText: 'Nice. That was one full hand: bidding, trump, following suit, and scoring. Solo is ready when you are; Train adds coach feedback on every move.',
+    tutorialCompleteText: 'Nice. You finished one full hand: bidding, choosing trump, discarding, following suit, winning tricks, and scoring. Solo is ready when you are; Train adds coach feedback on every move.',
     startSolo: 'Start Solo',
     keepExploring: 'Keep exploring',
     skipTutorial: 'Skip tutorial',
@@ -1401,6 +1415,8 @@ export function startGame(m, diff = 'normal', ctx = null) {
   trainHand = [];
   tourCtx = m === 'tour' ? ctx : null;
   dailyCtx = m === 'daily' ? ctx : null;
+  tutorialSeen = new Set();
+  finishTutorialStep('reset');
   activeCharacters = buildCharacters(tourCtx || dailyCtx);
   applyTableStyle(tourCtx?.venue || 'casino');
   S = newGame();
@@ -1410,7 +1426,7 @@ export function startGame(m, diff = 'normal', ctx = null) {
   gameLoop(run, false);
 }
 
-function updateTutorialGuide(key = 'tutorialIntro', vars = {}) {
+function updateTutorialGuide(key = 'tutorialTableIntro', vars = {}) {
   const guide = $('tutorialGuide');
   if (!guide) return;
   const active = isTutorial();
@@ -1419,16 +1435,52 @@ function updateTutorialGuide(key = 'tutorialIntro', vars = {}) {
   $('tutorialGuideTitle').textContent = t('guidedHand');
   $('tutorialGuideText').textContent = t(key, vars);
   $('tutorialSkip').textContent = t('skipTutorial');
+  const next = $('tutorialNext');
+  if (next) {
+    next.textContent = t('tutorialNext');
+    next.hidden = !tutorialStepWaiting;
+  }
 }
 
 function hideTutorialGuide() {
   const guide = $('tutorialGuide');
   if (guide) guide.hidden = true;
+  tutorialStepWaiting = false;
+  tutorialStepResolve = null;
+}
+
+function finishTutorialStep(value = 'next') {
+  const resolve = tutorialStepResolve;
+  tutorialStepResolve = null;
+  tutorialStepWaiting = false;
+  const next = $('tutorialNext');
+  if (next) next.hidden = true;
+  if (resolve) resolve(value);
+}
+
+function tutorialStep(key, vars = {}, options = {}) {
+  if (!isTutorial()) return Promise.resolve('next');
+  if (options.once && tutorialSeen.has(key)) {
+    updateTutorialGuide(key, vars);
+    return Promise.resolve('next');
+  }
+  if (options.once) tutorialSeen.add(key);
+  finishTutorialStep('replace');
+  tutorialStepWaiting = true;
+  updateTutorialGuide(key, vars);
+  const next = $('tutorialNext');
+  if (next) {
+    next.textContent = t(options.nextKey || 'tutorialNext');
+    next.hidden = false;
+    requestAnimationFrame(() => next.focus());
+  }
+  return new Promise((resolve) => { tutorialStepResolve = resolve; });
 }
 
 function skipTutorial() {
   if (!isTutorial()) return;
   cancelActiveRun();
+  finishTutorialStep('skip');
   S = null;
   hideTutorialGuide();
   clearSavedGame('tutorial');
@@ -1667,6 +1719,7 @@ export function bindUI() {
   $('welcomeTutorial').onclick = () => { dismissWelcome(); startGame('tutorial', 'easy'); };
   $('welcomeSkip').onclick = dismissWelcome;
   $('tutorialSkip').onclick = skipTutorial;
+  $('tutorialNext').onclick = () => finishTutorialStep('next');
   $('statsReset').onclick = async () => {
     if (await confirmDialog({ desc: 'Reset all your stats and badges? This can’t be undone.' })) {
       stats = Stats.defaultStats();
@@ -2208,9 +2261,21 @@ function dealNextHand() {
 async function prepareHand(run) {
   trainHand = [];
   perspective = 0;
-  updateTutorialGuide('tutorialIntro');
+  if (isTutorial()) {
+    await tutorialStep('tutorialTableIntro', {}, { nextKey: 'tutorialStartDeal', once: true });
+    if (!isActive(run)) return;
+    updateTutorialGuide('tutorialDeal');
+  } else {
+    updateTutorialGuide('tutorialTableIntro');
+  }
   saveGame();
   await dealAnimation();
+  if (isTutorial() && isActive(run)) {
+    await tutorialStep('tutorialAfterDeal', {
+      dealerLine: S.dealer === 0 ? 'You are dealer' : `${nameFor(S.dealer)} is dealer`,
+      card: cardName(S.upCard),
+    });
+  }
 }
 
 // ─── bidding ───
@@ -2220,12 +2285,26 @@ async function handleBid(run) {
   let dec;
   if (isHuman(seat)) {
     if (!isActive(run)) return;
-    updateTutorialGuide(S.phase === 'bid1' ? 'tutorialBidRound1' : 'tutorialBidRound2');
+    if (isTutorial()) {
+      await tutorialStep(S.phase === 'bid1' ? 'tutorialYourBidRound1' : 'tutorialYourBidRound2', {
+        dealer: nameFor(S.dealer),
+      });
+      if (!isActive(run)) return;
+    } else {
+      updateTutorialGuide(S.phase === 'bid1' ? 'tutorialBidRound1' : 'tutorialBidRound2', {
+        dealer: nameFor(S.dealer),
+      });
+    }
     setStatus(t('yourBid'));
     dec = await openBidSheet(seat);
     closeBidSheet();
   } else {
-    updateTutorialGuide('tutorialWatch', { name: nameFor(seat) });
+    if (isTutorial()) {
+      await tutorialStep('tutorialAiBid', { name: nameFor(seat) });
+      if (!isActive(run)) return;
+    } else {
+      updateTutorialGuide('tutorialWatch', { name: nameFor(seat) });
+    }
     setStatus(t('consideringBid', { name: nameFor(seat) }));
     await paceDelay(520);
     if (!isActive(run)) return;
@@ -2244,6 +2323,14 @@ async function applyBid(seat, d, run) {
     const pickupAnimation = preparePickupAnimation(upCardData);
     seatFlash(seat, d.alone ? 'Alone!' : 'Order up!');
     setStatus(t('picksItUp', { name: nameFor(S.dealer) }));
+    if (isTutorial()) {
+      await tutorialStep('tutorialPickup', {
+        dealer: nameFor(S.dealer),
+        card: cardName(upCardData),
+        suit: `${SUIT_SYMBOL[upCardData.suit]} ${upCardData.suit}`,
+      });
+      if (!isActive(run)) return;
+    }
     orderUp(S, seat, d.alone);
     saveGame();
     renderAll();
@@ -2256,6 +2343,13 @@ async function applyBid(seat, d, run) {
   } else if (d.action === 'callTrump') {
     seatFlash(seat, `${SUIT_SYMBOL[d.suit]}${d.alone ? ' alone!' : ' trump!'}`);
     if (!isHuman(seat)) reactBubble(seat, 'call');
+    if (isTutorial()) {
+      await tutorialStep('tutorialTrumpCalled', {
+        name: nameFor(seat),
+        suit: `${SUIT_SYMBOL[d.suit]} ${d.suit}`,
+      });
+      if (!isActive(run)) return;
+    }
     callTrump(S, seat, d.suit, d.alone);
     saveGame();
     feedbackEvent('bid');
@@ -2274,7 +2368,12 @@ async function handleDiscard(run) {
   pendingDiscardId = null;
   renderAll();
   if (isHuman(seat)) {
-    updateTutorialGuide('tutorialDiscard');
+    if (isTutorial()) {
+      await tutorialStep('tutorialDiscard');
+      if (!isActive(run)) return;
+    } else {
+      updateTutorialGuide('tutorialDiscard');
+    }
     setStatus(t('discardPrompt'));
     const card = await waitForCardTap(S.hands[seat]); // any card legal
     if (!card || !isActive(run)) return;
@@ -2300,10 +2399,19 @@ async function handleDiscard(run) {
 async function handlePlay(run) {
   const seat = S.turn;
   renderAll();
+  if (isTutorial() && S.trickPile.length === 0) {
+    await tutorialStep('tutorialPlayLead', { name: nameFor(seat) });
+    if (!isActive(run)) return;
+  }
   if (isHuman(seat)) {
     if (!isActive(run)) return;
     const legal = getLegalCards(S, seat);
-    updateTutorialGuide('tutorialPlay');
+    if (isTutorial()) {
+      await tutorialStep('tutorialPlay');
+      if (!isActive(run)) return;
+    } else {
+      updateTutorialGuide('tutorialPlay');
+    }
     setStatus(t('yourTurn'));
     showHint(true);
     const card = await waitForCardTap(legal);
@@ -2350,6 +2458,10 @@ async function commitPlay(seat, card, run) {
     reactToTrick(last);
     await paceDelay(690);
     if (!isActive(run)) return;
+    if (isTutorial()) {
+      await tutorialStep('tutorialTrickWon', { name: nameFor(last.winner) });
+      if (!isActive(run)) return;
+    }
     // 3) the trick sweeps to the winner's pile
     await sweepTrick(last.winner);
     if (!isActive(run)) return;
@@ -2957,7 +3069,9 @@ function openBidSheet(seat) {
     if (isTutorial()) {
       const note = document.createElement('div');
       note.className = 'tutorial-sheet-note';
-      note.textContent = S.phase === 'bid1' ? t('tutorialBidRound1') : t('tutorialBidRound2');
+      note.textContent = S.phase === 'bid1'
+        ? t('tutorialBidRound1', { dealer: nameFor(S.dealer) })
+        : t('tutorialBidRound2');
       body.prepend(note);
     }
 

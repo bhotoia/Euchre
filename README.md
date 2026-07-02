@@ -6,7 +6,7 @@ Mobile-first Euchre against AI, delivered as an installable PWA and a self-conta
 
 ## Current state
 
-Last reviewed: **June 30, 2026**
+Last reviewed: **July 2, 2026**
 
 - Working modes: **Solo**, **Train**, **Daily Deal**, and **Tournaments**.
 - Games use standard 24-card Euchre, teams `[0,2]` vs `[1,3]`, and finish at 10 points.
@@ -21,7 +21,7 @@ Last reviewed: **June 30, 2026**
 - Shared career stats include Solo, Train, official Daily Deal attempts, and Tournament hands and games.
 - Daily Deal generates the same offline date-seeded deals, ally, opponents, and difficulty for everyone; only the first attempt is official.
 - The streamlined home screen focuses on the four play modes. Clubhouse groups team, stats, trophies, and card packs; Settings groups identity, feedback, appearance, rules, about/privacy/support, and data controls.
-- First-run onboarding opens with a welcome message and offers a skippable guided one-hand tutorial. The tutorial uses the real table, explains bidding, trump, discarding, and following suit, does not save or affect stats, and can be skipped from the table.
+- First-run onboarding opens with a welcome message and offers a skippable guided one-hand tutorial. The tutorial uses the real table with step-by-step Next prompts before dealing, bidding, pickup/discard, trick play, and scoring; it does not save or affect stats and can be skipped from the table.
 - Landscape tablet viewports use expanded two-column menu, Daily Deal, About/Privacy, and table layouts so Play Store tablet screenshots and tablet play do not look like a narrow phone UI.
 - Settings includes an About screen with app version/build, current local-only privacy posture, support guidance, application id, and data-storage summary.
 - The repo includes a no-domain static privacy site in `docs/` for GitHub Pages-style hosting.
@@ -48,7 +48,7 @@ Before handing off a change, run the checks relevant to it:
 ```bash
 npm run check            # JavaScript syntax checks
 npm run security:check   # npm audit plus repo security posture checks
-npm test                 # 59 engine, coach, daily, cosmetics, UI, stats, ally, language, team-name, speed, prestige, iPhone PWA, and progression tests
+npm test                 # 60 engine, coach, daily, cosmetics, UI, stats, ally, language, team-name, speed, prestige, iPhone PWA, and progression tests
 npm run test:sim         # 250 full AI games; validates legal play/completion
 npm run test:coach-sim   # slower coach-vs-hard-AI soundness check
 npm run android:bundle   # regenerate ignored android/assets/
@@ -56,15 +56,15 @@ npm run android:apk      # Gradle debug APK for local Android installs
 npm run android:aab      # Gradle release Android App Bundle for Play Console upload
 ```
 
-Verified for this handoff on June 30, 2026:
+Verified for this handoff on July 2, 2026:
 
 - `npm run check`: pass
 - `npm run security:check`: pass
-- `npm test`: 59/59 pass
+- `npm test`: 60/60 pass
 - `npm run android:apk`: pass; output `android/app/build/outputs/apk/debug/app-debug.apk`, package `com.offlineeuchre.cardgame.dev`, label `Euchre Dev`
 - `npm run android:aab`: pass; output `android/app/build/outputs/bundle/release/app-release.aab`
-- Browser smoke test at 390×844: first-run welcome opens, starts the guided tutorial hand, shows the tutorial guide on the table, and Skip returns to the menu.
-- S24+ Wi-Fi ADB dev install: `com.offlineeuchre.cardgame.dev` version `2.30-dev` / code `41` installed and launched successfully from `android/app/build/outputs/apk/debug/app-debug.apk` via `192.168.68.58:41545`.
+- Browser smoke test at 390×844: first-run welcome opens, starts the staged guided tutorial before cards animate, and Skip returns to the menu.
+- S24+ Wi-Fi ADB dev install: `com.offlineeuchre.cardgame.dev` version `2.31-dev` / code `42` installed and launched successfully from `android/app/build/outputs/apk/debug/app-debug.apk` via `192.168.68.58:41545`.
 - Local PC installs use the dev package `com.offlineeuchre.cardgame.dev` with launcher label `Euchre Dev`; Play Store installs and uploads use production package `com.offlineeuchre.cardgame` with launcher label `Euchre`, so both can coexist for rollout testing.
 - Release signing with private PKCS12 upload keystore outside the repo: pass; `jarsigner -verify` reports `jar verified`
 - Static no-domain privacy page: `docs/privacy-policy.html` added and covered by tests.
@@ -281,7 +281,7 @@ On PowerShell, if `npm run android:build:legacy` fails because the `C:\Program F
 - `android/bundle.js` concatenates modules in dependency order, strips imports/exports, injects worker/namespace shims, transforms `index.html`, and stages ignored `android/assets/`.
 - The WebView cannot load the normal `file://` ES-module/worker setup, so Android runs coach evaluation synchronously.
 - `android/gradlew` builds with Gradle 8.9 and Android Gradle Plugin 8.7.3. The Gradle source set points at the existing `android/AndroidManifest.xml`, `android/java/`, `android/res/`, and generated `android/assets/` paths.
-- Gradle uses application id `com.offlineeuchre.cardgame`, compile SDK 35, target SDK 35, min SDK 24, Java 17, `versionCode` 41, and `versionName` 2.30.
+- Gradle uses application id `com.offlineeuchre.cardgame`, compile SDK 35, target SDK 35, min SDK 24, Java 17, `versionCode` 42, and `versionName` 2.31.
 - `android/build.sh` is the legacy no-Gradle direct APK builder. It uses Android SDK Build Tools 35.0.1, platform 35, Java 17, min SDK 24, and target SDK 35.
 - The legacy script contains Windows-specific default paths for the Android SDK, Android Studio JBR, and Git Bash. Environment variables can override SDK/JBR locations.
 - Legacy output is `android/build/euchre.apk`, signed with a local debug keystore.
