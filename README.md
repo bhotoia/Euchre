@@ -61,11 +61,11 @@ Verified for this handoff on June 30, 2026:
 - `npm run check`: pass
 - `npm run security:check`: pass
 - `npm test`: 59/59 pass
-- `npm run android:apk`: pass; output `android/app/build/outputs/apk/debug/app-debug.apk`
+- `npm run android:apk`: pass; output `android/app/build/outputs/apk/debug/app-debug.apk`, package `com.offlineeuchre.cardgame.dev`, label `Euchre Dev`
 - `npm run android:aab`: pass; output `android/app/build/outputs/bundle/release/app-release.aab`
 - Browser smoke test at 390×844: first-run welcome opens, starts the guided tutorial hand, shows the tutorial guide on the table, and Skip returns to the menu.
-- S24+ Wi-Fi ADB update to `2.30 (41)` was attempted but blocked because the last known wireless-debugging port `192.168.68.58:37577` refused the connection. `android/build/euchre.apk` is built and ready to install over the existing final package once the current ADB port is available.
-- S24+ active user package check: only `com.offlineeuchre.cardgame` remains; no debug duplicate package is installed.
+- S24+ Wi-Fi ADB dev install: `com.offlineeuchre.cardgame.dev` version `2.30-dev` / code `41` installed and launched successfully from `android/app/build/outputs/apk/debug/app-debug.apk` via `192.168.68.58:41545`.
+- Local PC installs use the dev package `com.offlineeuchre.cardgame.dev` with launcher label `Euchre Dev`; Play Store installs and uploads use production package `com.offlineeuchre.cardgame` with launcher label `Euchre`, so both can coexist for rollout testing.
 - Release signing with private PKCS12 upload keystore outside the repo: pass; `jarsigner -verify` reports `jar verified`
 - Static no-domain privacy page: `docs/privacy-policy.html` added and covered by tests.
 - Play listing assets generated: 1024×500 feature graphic, five 432×864 phone screenshots, five 1920×1080 landscape 7-inch tablet screenshots, and five 2560×1600 landscape 10-inch tablet screenshots under `docs/play-store/assets/`.
@@ -245,8 +245,14 @@ Gradle builds run `android/bundle.js` automatically before native packaging, so 
 
 Outputs:
 
-- Debug APK for local installs: `android/app/build/outputs/apk/debug/app-debug.apk`
+- Debug APK for local PC installs: `android/app/build/outputs/apk/debug/app-debug.apk`
+  - Package: `com.offlineeuchre.cardgame.dev`
+  - Launcher label: `Euchre Dev`
+  - Purpose: direct ADB installs and local testing, separate from the Play Store app.
 - Release Android App Bundle for Play Console: `android/app/build/outputs/bundle/release/app-release.aab`
+  - Package: `com.offlineeuchre.cardgame`
+  - Launcher label: `Euchre`
+  - Purpose: Play Console upload and rollout testing.
 
 Release signing is configured through environment variables. Without them, `npm run android:aab` still produces an unsigned release bundle for local validation.
 
@@ -292,11 +298,10 @@ npm run android:apk
 & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" -s PHONE_IP:ADB_PORT install -r android\app\build\outputs\apk\debug\app-debug.apk
 ```
 
-Use the legacy direct APK when installing the final application id without the Gradle debug `.debug` suffix:
+The legacy direct APK builder is retained only for low-level packaging comparison. Do not use it for routine phone installs while testing Play rollouts; use the Gradle debug APK above so the local app stays separate from the Play Store production package.
 
 ```powershell
 & 'C:\Program Files\Git\bin\bash.exe' 'android/build.sh'
-& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" -s PHONE_IP:ADB_PORT install -r android\build\euchre.apk
 ```
 
 ### Release and update process
