@@ -21,6 +21,7 @@ Last reviewed: **June 30, 2026**
 - Shared career stats include Solo, Train, official Daily Deal attempts, and Tournament hands and games.
 - Daily Deal generates the same offline date-seeded deals, ally, opponents, and difficulty for everyone; only the first attempt is official.
 - The streamlined home screen focuses on the four play modes. Clubhouse groups team, stats, trophies, and card packs; Settings groups identity, feedback, appearance, rules, about/privacy/support, and data controls.
+- First-run onboarding opens with a welcome message and offers a skippable guided one-hand tutorial. The tutorial uses the real table, explains bidding, trump, discarding, and following suit, does not save or affect stats, and can be skipped from the table.
 - Landscape tablet viewports use expanded two-column menu, Daily Deal, About/Privacy, and table layouts so Play Store tablet screenshots and tablet play do not look like a narrow phone UI.
 - Settings includes an About screen with app version/build, current local-only privacy posture, support guidance, application id, and data-storage summary.
 - The repo includes a no-domain static privacy site in `docs/` for GitHub Pages-style hosting.
@@ -62,8 +63,8 @@ Verified for this handoff on June 30, 2026:
 - `npm test`: 59/59 pass
 - `npm run android:apk`: pass; output `android/app/build/outputs/apk/debug/app-debug.apk`
 - `npm run android:aab`: pass; output `android/app/build/outputs/bundle/release/app-release.aab`
-- Browser smoke test via generated screenshots: Settings → About opens, shows `Version 2.29 (40)`, and has no horizontal overflow at the phone screenshot size.
-- S24+ Wi-Fi ADB install: `com.offlineeuchre.cardgame` version `2.29` / code `40` installed and launched successfully from `android/build/euchre.apk` via `192.168.68.58:37577`.
+- Browser smoke test at 390×844: first-run welcome opens, starts the guided tutorial hand, shows the tutorial guide on the table, and Skip returns to the menu.
+- S24+ Wi-Fi ADB update to `2.30 (41)` was attempted but blocked because the last known wireless-debugging port `192.168.68.58:37577` refused the connection. `android/build/euchre.apk` is built and ready to install over the existing final package once the current ADB port is available.
 - S24+ active user package check: only `com.offlineeuchre.cardgame` remains; no debug duplicate package is installed.
 - Release signing with private PKCS12 upload keystore outside the repo: pass; `jarsigner -verify` reports `jar verified`
 - Static no-domain privacy page: `docs/privacy-policy.html` added and covered by tests.
@@ -274,7 +275,7 @@ On PowerShell, if `npm run android:build:legacy` fails because the `C:\Program F
 - `android/bundle.js` concatenates modules in dependency order, strips imports/exports, injects worker/namespace shims, transforms `index.html`, and stages ignored `android/assets/`.
 - The WebView cannot load the normal `file://` ES-module/worker setup, so Android runs coach evaluation synchronously.
 - `android/gradlew` builds with Gradle 8.9 and Android Gradle Plugin 8.7.3. The Gradle source set points at the existing `android/AndroidManifest.xml`, `android/java/`, `android/res/`, and generated `android/assets/` paths.
-- Gradle uses application id `com.offlineeuchre.cardgame`, compile SDK 35, target SDK 35, min SDK 24, Java 17, `versionCode` 40, and `versionName` 2.29.
+- Gradle uses application id `com.offlineeuchre.cardgame`, compile SDK 35, target SDK 35, min SDK 24, Java 17, `versionCode` 41, and `versionName` 2.30.
 - `android/build.sh` is the legacy no-Gradle direct APK builder. It uses Android SDK Build Tools 35.0.1, platform 35, Java 17, min SDK 24, and target SDK 35.
 - The legacy script contains Windows-specific default paths for the Android SDK, Android Studio JBR, and Git Bash. Environment variables can override SDK/JBR locations.
 - Legacy output is `android/build/euchre.apk`, signed with a local debug keystore.

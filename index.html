@@ -390,6 +390,13 @@
       </div>
 
       <div class="table-messages">
+        <div class="tutorial-guide" id="tutorialGuide" hidden>
+          <div>
+            <b id="tutorialGuideTitle">Guided hand</b>
+            <span id="tutorialGuideText">We will walk through one hand together.</span>
+          </div>
+          <button class="btn btn-ghost" id="tutorialSkip" type="button">Skip</button>
+        </div>
         <div class="contract" id="contractBar" hidden></div>
         <div class="status-line" id="statusLine" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
@@ -556,10 +563,10 @@
   <div class="modal-scrim" id="welcomeScrim" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
       <div class="modal-kicker">Welcome</div>
-      <div class="modal-title" id="welcomeTitle">Learn Euchre fast</div>
-      <div class="modal-score">Train mode puts a coach behind every move — it grades each play and tells you the better line. The fastest way to master the game.</div>
-      <button class="btn btn-primary" id="welcomeTrain">Start training</button>
-      <button class="btn btn-ghost" id="welcomeSkip">Maybe later</button>
+      <div class="modal-title" id="welcomeTitle">Welcome to Euchre</div>
+      <div class="modal-score">Play a gentle one-hand tutorial with tips for bidding, following suit, and taking tricks. You can skip it any time.</div>
+      <button class="btn btn-primary" id="welcomeTutorial">Play tutorial hand</button>
+      <button class="btn btn-ghost" id="welcomeSkip">Skip for now</button>
     </div>
   </div>
 

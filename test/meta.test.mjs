@@ -240,6 +240,23 @@ test('ui: gameplay score cluster keeps trump centered', () => {
   assert.match(css, /#table\s+\.hud:has\(#lastTrickBtn:not\(\[hidden\]\)\):has\(#hintBtn:not\(\[hidden\]\)\)\s+\.hud-right\s+\.icon-btn\s*\{[^}]*width:\s*30px/s);
 });
 
+test('ui: first-run welcome opens a skippable guided hand', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../css/style.css', import.meta.url), 'utf8');
+  const ui = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
+  assert.match(html, /id="welcomeTutorial"/);
+  assert.match(html, /id="tutorialGuide"/);
+  assert.match(html, /id="tutorialSkip"/);
+  assert.match(css, /\.tutorial-guide\s*\{/);
+  assert.match(css, /\.tutorial-sheet-note\s*\{/);
+  assert.match(ui, /mode === 'tutorial'/);
+  assert.match(ui, /startGame\('tutorial', 'easy'\)/);
+  assert.match(ui, /function skipTutorial\(\)/);
+  assert.match(ui, /function showTutorialComplete\(\)/);
+  assert.match(ui, /if \(isTutorial\(\)\) return;\s*if \(!S \|\| S\.phase === 'idle'\) return;/);
+  assert.match(ui, /if \(isTutorial\(\)\) \{\s*const next = await showTutorialComplete\(\);/s);
+});
+
 test('coach UI: lesson block and auto-advance state are present', () => {
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   const css = readFileSync(new URL('../css/style.css', import.meta.url), 'utf8');

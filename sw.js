@@ -1,6 +1,6 @@
 // Service worker — precache app shell, network-first so updates flow when online,
 // cache fallback for full offline play.
-const CACHE = 'euchre-v52';
+const CACHE = 'euchre-v53';
 const SHELL = [
   './',
   'index.html',

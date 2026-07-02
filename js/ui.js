@@ -34,12 +34,13 @@ import {
 const NAMES = {
   ai:    ['you', 'west', 'partner', 'east'],
   train: ['you', 'west', 'partner', 'east'],
+  tutorial: ['you', 'west', 'partner', 'east'],
   tour:  ['you', 'west', 'partner', 'east'],
   daily: ['you', 'west', 'partner', 'east'],
 };
 
 let S;                 // game state
-let mode = 'ai';       // 'ai' | 'train' | 'tour' | 'daily'
+let mode = 'ai';       // 'ai' | 'train' | 'tutorial' | 'tour' | 'daily'
 let difficulty = 'normal'; // 'easy' | 'normal' | 'hard'
 let perspective = 0;   // seat shown at the bottom (face-up)
 let humanResolve = null;
@@ -70,8 +71,8 @@ const SAVES_KEY = 'euchre.saves.v1';   // map keyed by mode → each mode resume
 const FEEDBACK_KEY = 'euchre.feedback.v2';
 const HAND_RESULT_SETTLE_MS = 180;
 const APP_INFO = {
-  versionName: '2.29',
-  versionCode: '40',
+  versionName: '2.30',
+  versionCode: '41',
   applicationId: 'com.offlineeuchre.cardgame',
   supportEmail: 'abhotoia@gmail.com',
 };
@@ -83,6 +84,7 @@ const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (ch) => ({
 }[ch]));
 const isHuman = (seat) => seat === 0;
 const isTrain = () => mode === 'train';
+const isTutorial = () => mode === 'tutorial';
 const screenPos = (seat) => (seat - perspective + 4) % 4; // 0 bottom,1 left,2 top,3 right
 const POS_SEL = ['#seat-0', '#seat-1', '#seat-2', '#seat-3'];
 
@@ -200,10 +202,22 @@ const I18N = {
     yourName: 'Your name',
     save: 'Save',
     welcome: 'Welcome',
-    learnFast: 'Learn Euchre fast',
-    welcomeText: 'Train mode puts a coach behind every move — it grades each play and tells you the better line. The fastest way to master the game.',
-    startTraining: 'Start training',
-    maybeLater: 'Maybe later',
+    welcomeTitle: 'Welcome to Euchre',
+    welcomeText: 'Play a gentle one-hand tutorial with tips for bidding, following suit, and taking tricks. You can skip it any time.',
+    startTutorial: 'Play tutorial hand',
+    skipForNow: 'Skip for now',
+    guidedHand: 'Guided hand',
+    tutorialIntro: 'We will play one hand slowly. Watch the turned-up card, choose whether to bid, then follow suit when you can.',
+    tutorialBidRound1: 'The card in the middle can become trump. If you order it up, the dealer gets that card and must discard one.',
+    tutorialBidRound2: 'Everyone passed. Now you can name any trump suit except the turned-down suit, or pass and redeal.',
+    tutorialDiscard: 'You are the dealer. Pick one card to discard so your hand goes back to five cards.',
+    tutorialPlay: 'Your turn. Follow the led suit if you have it. When you cannot follow suit, trump can win the trick.',
+    tutorialWatch: '{name} is deciding. Watch which suit is led and who has to follow it.',
+    tutorialCompleteTitle: 'Tutorial hand complete',
+    tutorialCompleteText: 'Nice. That was one full hand: bidding, trump, following suit, and scoring. Solo is ready when you are; Train adds coach feedback on every move.',
+    startSolo: 'Start Solo',
+    keepExploring: 'Keep exploring',
+    skipTutorial: 'Skip tutorial',
     currentGame: 'Current game',
     leaveTable: 'Leave the table?',
     saveAndLeave: 'Save & leave',
@@ -408,9 +422,22 @@ const I18N = {
     save: '保存',
     welcome: '欢迎',
     learnFast: '快速学会尤克牌',
-    welcomeText: '训练模式会在每一步给出教练建议——评分你的打法，并指出更好的路线。这是最快的精通方式。',
-    startTraining: '开始训练',
-    maybeLater: '稍后再说',
+    welcomeTitle: '欢迎来到 Euchre',
+    welcomeText: '先打一手温和的新手教学牌局，了解叫牌、跟牌和赢墩。你可以随时跳过。',
+    startTutorial: '打一手教学牌',
+    skipForNow: '暂时跳过',
+    guidedHand: '教学牌局',
+    tutorialIntro: '我们会慢慢打一手牌。先看翻开的牌，决定是否叫牌，然后在能跟牌时跟同花色。',
+    tutorialBidRound1: '中间的牌可能成为 trump。叫它起来后，庄家会拿到这张牌并弃一张。',
+    tutorialBidRound2: '大家都过了。现在你可以指定一个 trump 花色，但不能选刚才翻下去的花色，也可以继续过牌。',
+    tutorialDiscard: '你是庄家。请选择一张牌弃掉，让手牌回到五张。',
+    tutorialPlay: '轮到你了。有同花色时必须跟牌；没有时，trump 往往可以赢下这一墩。',
+    tutorialWatch: '{name} 正在决定。留意首牌花色，以及谁必须跟牌。',
+    tutorialCompleteTitle: '教学牌局完成',
+    tutorialCompleteText: '很好。你已经完成了一手牌：叫牌、trump、跟牌和计分。可以开始 Solo，也可以用 Train 让教练点评每一步。',
+    startSolo: '开始 Solo',
+    keepExploring: '继续看看',
+    skipTutorial: '跳过教学',
     currentGame: '当前游戏',
     leaveTable: '离开牌桌？',
     saveAndLeave: '保存并离开',
@@ -703,8 +730,8 @@ function applyLanguage() {
   if (profileFields[0]) profileFields[0].textContent = t('yourName');
   if (profileFields[1]) profileFields[1].textContent = t('teamName');
   setText('profileCancel', 'cancel'); setText('profileSave', 'save');
-  set('#welcomeScrim .modal-kicker', 'welcome'); setText('welcomeTitle', 'learnFast');
-  set('#welcomeScrim .modal-score', 'welcomeText'); setText('welcomeTrain', 'startTraining'); setText('welcomeSkip', 'maybeLater');
+  set('#welcomeScrim .modal-kicker', 'welcome'); setText('welcomeTitle', 'welcomeTitle');
+  set('#welcomeScrim .modal-score', 'welcomeText'); setText('welcomeTutorial', 'startTutorial'); setText('welcomeSkip', 'skipForNow');
   setText('rulesTitle', 'howToPlay'); setHTML('rulesBody', 'rulesHTML'); setText('rulesClose', 'gotIt');
   set('#exitScrim .modal-kicker', 'currentGame'); setText('exitTitle', 'leaveTable');
   setText('leaveBtn', 'saveAndLeave'); setText('stayBtn', 'keepPlaying'); setText('discardLeaveBtn', 'leaveWithoutSaving');
@@ -1383,6 +1410,56 @@ export function startGame(m, diff = 'normal', ctx = null) {
   gameLoop(run, false);
 }
 
+function updateTutorialGuide(key = 'tutorialIntro', vars = {}) {
+  const guide = $('tutorialGuide');
+  if (!guide) return;
+  const active = isTutorial();
+  guide.hidden = !active;
+  if (!active) return;
+  $('tutorialGuideTitle').textContent = t('guidedHand');
+  $('tutorialGuideText').textContent = t(key, vars);
+  $('tutorialSkip').textContent = t('skipTutorial');
+}
+
+function hideTutorialGuide() {
+  const guide = $('tutorialGuide');
+  if (guide) guide.hidden = true;
+}
+
+function skipTutorial() {
+  if (!isTutorial()) return;
+  cancelActiveRun();
+  S = null;
+  hideTutorialGuide();
+  clearSavedGame('tutorial');
+  applyTableStyle('casino');
+  show('menu');
+}
+
+function showTutorialComplete() {
+  return new Promise((resolve) => {
+    pendingResolve = resolve;
+    $('modalKicker').textContent = t('guidedHand');
+    $('modalTitle').textContent = t('tutorialCompleteTitle');
+    $('modalScore').textContent = t('tutorialCompleteText');
+    $('modalSummary').innerHTML = '';
+    $('modalRecap').style.display = 'none';
+    $('modalBtn').textContent = t('startSolo');
+    const scrim = $('modalScrim');
+    scrim.classList.add('show');
+    scrim.setAttribute('aria-hidden', 'false');
+    syncBackgroundInert();
+    requestAnimationFrame(() => $('modalBtn').focus());
+    $('modalBtn').onclick = () => {
+      pendingResolve = null;
+      scrim.classList.remove('show');
+      scrim.setAttribute('aria-hidden', 'true');
+      syncBackgroundInert();
+      resolve('solo');
+    };
+  });
+}
+
 // ─── mode submenu (Solo / Train) ───
 const MODE_LABEL = { ai: 'solo', train: 'train' };
 
@@ -1587,8 +1664,9 @@ export function bindUI() {
   $('lastTrickBtn').onclick = showLastTrick;
   $('lastTrickClose').onclick = () => closeModal('lastTrickScrim');
   $('lastTrickScrim').onclick = (e) => { if (e.target === $('lastTrickScrim')) closeModal('lastTrickScrim'); };
-  $('welcomeTrain').onclick = () => { dismissWelcome(); startGame('train', 'normal'); };
+  $('welcomeTutorial').onclick = () => { dismissWelcome(); startGame('tutorial', 'easy'); };
   $('welcomeSkip').onclick = dismissWelcome;
+  $('tutorialSkip').onclick = skipTutorial;
   $('statsReset').onclick = async () => {
     if (await confirmDialog({ desc: 'Reset all your stats and badges? This can’t be undone.' })) {
       stats = Stats.defaultStats();
@@ -1649,7 +1727,7 @@ function maybeWelcome() {
     const anySave = Object.keys(loadSaves()).length > 0;
     if (localStorage.getItem('euchre.seenWelcome') || anySave) return;
   } catch {}
-  openModal('welcomeScrim', 'welcomeTrain');
+  openModal('welcomeScrim', 'welcomeTutorial');
 }
 
 function dismissWelcome() {
@@ -1684,6 +1762,7 @@ function show(screen) {
   $(screen).classList.add('active');
   document.body.dataset.screen = screen;
   if (screen === 'table') applyIdentity();
+  else hideTutorialGuide();
 }
 
 function isActive(run) { return run === activeRun && !!S; }
@@ -1700,12 +1779,14 @@ function cancelActiveRun() {
   closeModal('rewardScrim', false);
   closeModal('languageScrim', false);
   closeModal('secretScrim', false);
+  hideTutorialGuide();
   $('faceoff').classList.remove('show');
   $('faceoff').setAttribute('aria-hidden', 'true');
   syncBackgroundInert();
 }
 
 function requestExit() {
+  if (isTutorial()) { skipTutorial(); return; }
   if (mode === 'daily' && dailyCtx && !dailyCtx.practice) {
     $('exitDescription').textContent = 'Save to continue your official attempt later. Leaving without saving forfeits today’s score.';
     $('discardLeaveBtn').textContent = 'Forfeit official attempt';
@@ -1746,6 +1827,7 @@ function writeSaves(map) {
 }
 
 function saveGame() {
+  if (isTutorial()) return;
   if (!S || S.phase === 'idle') return;
   const map = loadSaves();
   map[mode] = { version: 1, state: S, mode, difficulty, perspective, tourCtx, dailyCtx };
@@ -2082,6 +2164,16 @@ async function gameLoop(run, resume) {
       case 'handEnd':
         await showResult(false);
         if (!isActive(run)) return;
+        if (isTutorial()) {
+          const next = await showTutorialComplete();
+          if (!isActive(run)) return;
+          hideTutorialGuide();
+          clearSavedGame('tutorial');
+          S = null;
+          if (next === 'solo') startGame('ai', feedback.modeDiff.ai || 'normal');
+          else show('menu');
+          return;
+        }
         dealNextHand();
         await prepareHand(run);
         break;
@@ -2100,6 +2192,7 @@ async function gameLoop(run, resume) {
   } else {
     show('menu');
   }
+  hideTutorialGuide();
   S = null;
 }
 
@@ -2115,6 +2208,7 @@ function dealNextHand() {
 async function prepareHand(run) {
   trainHand = [];
   perspective = 0;
+  updateTutorialGuide('tutorialIntro');
   saveGame();
   await dealAnimation();
 }
@@ -2126,10 +2220,12 @@ async function handleBid(run) {
   let dec;
   if (isHuman(seat)) {
     if (!isActive(run)) return;
+    updateTutorialGuide(S.phase === 'bid1' ? 'tutorialBidRound1' : 'tutorialBidRound2');
     setStatus(t('yourBid'));
     dec = await openBidSheet(seat);
     closeBidSheet();
   } else {
+    updateTutorialGuide('tutorialWatch', { name: nameFor(seat) });
     setStatus(t('consideringBid', { name: nameFor(seat) }));
     await paceDelay(520);
     if (!isActive(run)) return;
@@ -2178,6 +2274,7 @@ async function handleDiscard(run) {
   pendingDiscardId = null;
   renderAll();
   if (isHuman(seat)) {
+    updateTutorialGuide('tutorialDiscard');
     setStatus(t('discardPrompt'));
     const card = await waitForCardTap(S.hands[seat]); // any card legal
     if (!card || !isActive(run)) return;
@@ -2206,6 +2303,7 @@ async function handlePlay(run) {
   if (isHuman(seat)) {
     if (!isActive(run)) return;
     const legal = getLegalCards(S, seat);
+    updateTutorialGuide('tutorialPlay');
     setStatus(t('yourTurn'));
     showHint(true);
     const card = await waitForCardTap(legal);
@@ -2216,6 +2314,7 @@ async function handlePlay(run) {
     if (!isActive(run)) return;
     if (snapshot) await coachReview(run, 'play', snapshot, seat, card);
   } else {
+    updateTutorialGuide('tutorialWatch', { name: nameFor(seat) });
     setStatus(t('isPlaying', { name: nameFor(seat) }));
     await paceDelay(340);
     if (!isActive(run)) return;
@@ -2855,6 +2954,12 @@ function openBidSheet(seat) {
     mini.className = 'bid-mini-hand';
     for (const c of sortHand(S.hands[seat], S.trump)) mini.appendChild(cardEl(c));
     body.prepend(mini);
+    if (isTutorial()) {
+      const note = document.createElement('div');
+      note.className = 'tutorial-sheet-note';
+      note.textContent = S.phase === 'bid1' ? t('tutorialBidRound1') : t('tutorialBidRound2');
+      body.prepend(note);
+    }
 
     $('sheetScrim').classList.add('show');
     $('sheetScrim').setAttribute('aria-hidden', 'false');
